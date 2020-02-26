@@ -1,7 +1,12 @@
-import React from "react"
+import React from 'react'
+import { connect } from 'react-redux'
 import IconButton from '../template/iconButton'
+import { bindActionCreators } from 'redux'
 
-export default props => {
+import { markAsDone, markAsPending, remove } from './todoActions' 
+
+
+const TodoList = props => {
   const renderRows = () => {
     const list = props.list || [];
 
@@ -9,9 +14,9 @@ export default props => {
       <tr key={todo._id}>
         <td className={todo.done ? 'markedAsDone' : ''}>{todo.description}</td>
         <td>
-            <IconButton style='success' icon='check' onClick={() => props.handleMarkAsDone(todo)} hide={todo.done}></IconButton>
-            <IconButton style='warning' icon='undo' onClick={() => props.handleMarkAsPending(todo)} hide={!todo.done}></IconButton>
-            <IconButton style='danger' icon='trash-o' onClick={() => props.handleRemove(todo)} hide={!todo.done}></IconButton>
+            <IconButton style='success' icon='check' onClick={() => props.markAsDone(todo)} hide={todo.done}></IconButton>
+            <IconButton style='warning' icon='undo' onClick={() => props.markAsPending(todo)} hide={!todo.done}></IconButton>
+            <IconButton style='danger' icon='trash-o' onClick={() => props.remove(todo)} hide={!todo.done}></IconButton>
         </td>
       </tr>
     ))
@@ -29,3 +34,7 @@ export default props => {
     </table>
   )
 }
+
+const mapStateToProps = state => ({list: state.todo.list})
+const mapsDispatchToProps = dispatch => bindActionCreators({ markAsDone, markAsPending, remove }, dispatch)
+export default connect(mapStateToProps, mapsDispatchToProps)(TodoList)
